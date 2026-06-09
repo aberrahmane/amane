@@ -627,9 +627,9 @@ const T = {
     'feat.badge':'مميزات المنصة','feat.title1':'بنية تحتية','feat.title2':' مالية شرعية ','feat.title3':'متكاملة',
     'feat.subtitle':'كل مكون في أمانة مصمم ليعكس أحكام الشريعة — من الضمان إلى التسوية، بدون أي استثناء.',
     'f1.title':'الضمان الشرعي','f1.desc':'ضمانات قائمة على وديعة يد ضامنة — مودعة في مصرف معتمد (بنك السلام أو بركة بنك) مع ضمان صفر أرباح ربوية.',
-    'f2.title':'كشف الاحتيال والمخاطر','f2.desc':'نظام ذكي يرصد السلوك المشبوه ويقيّم المخاطر في الوقت الفعلي — يحمي جميع أطراف الصفقة ويُصدر تنبيهات فورية.',
+    'f2.title':'كشف الاحتيال والمخاطر','f2.desc':'نظام ذكي يرصد السلوك المشبوه ويقيّم المخاطر في الوقت الفعلي — يحمي جميع أطراف الصفقة ويُصدر تنبيهات فورية عند اكتشاف أي نمط غير اعتيادي.',
     'f3.title':'مراقبة AML / CTRF','f3.desc':'نظام مراقبة مكافحة غسيل الأموال في الوقت الفعلي — كشف أنماط مشبوهة وإبلاغ تلقائي وفق متطلبات الجهات الرقابية الجزائرية.',
-    'f4.title':'التسوية والصرف الفوري','f4.desc':'إفراج فوري عن الأموال بعد اكتمال شروط الضمان — تحويلات DZD مباشرة بتحقق متعدد الطبقات وسجل تدقيق كامل.',
+    'f4.title':'التسوية والصرف الفوري','f4.desc':'إفراج فوري عن الأموال لحساب المستفيد بعد اكتمال شروط الضمان — تحويلات DZD مباشرة بتحقق متعدد الطبقات وسجل تدقيق كامل.',
     'f5.title':'التحقق من الهوية KYC','f5.desc':'تحقق ثلاثي المستويات — فحص قوائم العقوبات الدولية، التحقق من الوثائق، وتحديد الأشخاص السياسيين المعرضين للخطر.',
     'f6.title':'بوابة الدفع الشرعية','f6.desc':'أدوات دفع متوافقة حصراً: CIB Débit، BaridiMob، و CCP — بطاقات الائتمان وكل الأدوات ذات الفوائد محجوبة على مستوى البنية التحتية.',
     'feat.more':'اكتشف المزيد',
@@ -679,7 +679,7 @@ const T = {
     'stat1.label':'Secured Transactions','stat2.label':'Sharia Compliant','stat3.label':'Continuous Monitoring','stat4.label':'Violations',
     'card.id':'Active Escrow #2847','card.status':'● Secured','card.amount':'250,000 DZD',
     'card.bank':'Wadiah Custody · Bank Al Salam Algeria',
-    'card.sharia.label':'Compliance Status','card.sharia.val':'✓ Cleared',
+    'card.sharia.label':'Compliance Status','card.sharia.val':'✓ Halal Approved',
     'card.board.label':'Supervisory Board','card.board.val':'Approved',
     'card.payment.label':'Payment Method','card.aml.label':'AML Check','card.aml.val':'Cleared',
     'card.btn1':'Release','card.btn2':'Details',
@@ -691,7 +691,7 @@ const T = {
     'f1.title':'Compliant Escrow','f1.desc':'Escrow based on Wadiah Yad Damanah — held in an approved bank (Bank Al Salam or Baraka Bank) with a zero-interest guarantee.',
     'f2.title':'Fraud & Risk Detection','f2.desc':'An intelligent system monitoring suspicious behaviour and assessing risk in real time — protecting all parties and issuing instant alerts on unusual patterns.',
     'f3.title':'AML / CTRF Monitoring','f3.desc':'Real-time anti-money laundering monitoring — detecting suspicious patterns and automatically reporting to Algerian regulatory authorities.',
-    'f4.title':'Instant Settlement','f4.desc':'Immediate fund release to the beneficiary once escrow conditions are met — DZD transfers with multi-layer verification and a full audit trail.',
+    'f4.title':'Instant Settlement & Disbursement','f4.desc':'Immediate fund release to the beneficiary once escrow conditions are met — DZD transfers with multi-layer verification and a full audit trail.',
     'f5.title':'KYC Identity Verification','f5.desc':'Three-tier verification — international sanctions screening, document verification, and politically exposed persons identification.',
     'f6.title':'Compliant Payment Gateway','f6.desc':'Exclusively compliant instruments: CIB Débit, BaridiMob, and CCP — credit cards and all interest-bearing instruments blocked at infrastructure level.',
     'feat.more':'Learn More',
@@ -752,7 +752,7 @@ function applyLang(lang) {
   if (lb) lb.textContent = lang === 'en' ? 'Amane' : 'أمانة';
   if (fb) fb.textContent = lang === 'en' ? 'Amane' : 'أمانة';
   // page title
-  document.title = lang === 'en' ? 'Amane | Sharia-Compliant Escrow Platform' : 'أمانة | منصة الضمان المالي الشرعي';
+  document.title = lang === 'en' ? 'Amane |Escrow Platform' : 'أمانة | منصة الضمان المالي';
   // lang button labels
   document.querySelectorAll('#langBtn,#langBtnMobile').forEach(b => { b.textContent = lang === 'en' ? 'ع' : 'EN'; });
   // rebuild ticker
