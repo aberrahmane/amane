@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta id="metaDesc" name="description" content="أمانة." />
+  <title id="pageTitle">أمانة</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { gold: '#c9a227', 'gold-light': '#e8c547' } } }
+    };
+  </script>
+
+  <style>
+    :root {
+      --gold: #c9a227; --gold-light: #e8c547;
+      --gold-dim: rgba(201,162,39,0.12);
+      --navy: #04070e; --card: rgba(10,18,34,0.92);
+      --border-gold: rgba(201,162,39,0.22);
+      --border-subtle: rgba(255,255,255,0.06);
+      --text-primary: #eef0ff; --text-muted: #7a8ba8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--navy); color: var(--text-primary); font-family: 'Cairo',sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    body.ltr { font-family: 'Inter',sans-serif; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    .bg-grid {
+      background-image: linear-gradient(rgba(201,162,39,.035) 1px,transparent 1px), linear-gradient(90deg,rgba(201,162,39,.035) 1px,transparent 1px);
+      background-size: 64px 64px;
+    }
+    .hex-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23c9a227' stroke-width='0.4' opacity='0.07'%3E%3Cpolygon points='40,6 74,25 74,55 40,74 6,55 6,25'/%3E%3Cpolygon points='40,16 64,30 64,50 40,64 16,50 16,30'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .orb { position:absolute; border-radius:50%; filter:blur(110px); pointer-events:none; z-index:0; }
+
+    .glass { background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border-gold); transition:border-color .3s,transform .3s,box-shadow .3s; }
+    .glass:hover { border-color:rgba(201,162,39,.5); transform:translateY(-4px); box-shadow:0 24px 60px rgba(201,162,39,.08); }
+
+    .text-gold-grad { background:linear-gradient(135deg,var(--gold-light) 0%,var(--gold) 55%,#9b7b1a 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+    .btn-gold { background:linear-gradient(135deg,var(--gold-light),var(--gold)); color:#03050a; font-weight:800; position:relative; overflow:hidden; transition:transform .25s,box-shadow .25s; display:inline-block; cursor:pointer; border:none; }
+    .btn-gold::after { content:''; position:absolute; inset:0; background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%); transform:translateX(-150%); transition:transform .55s ease; }
+    .btn-gold:hover::after { transform:translateX(150%); }
+    .btn-gold:hover { transform:translateY(-2px); box-shadow:0 10px 36px rgba(201,162,39,.45); }
+
+    .btn-outline { border:1px solid var(--border-gold); color:var(--gold-light); transition:all .25s; display:inline-block; cursor:pointer; background:transparent; }
+    .btn-outline:hover { border-color:var(--gold); background:rgba(201,162,39,.07); transform:translateY(-2px); }
+
+    #navbar { position:fixed; top:0; inset-inline:0; z-index:100; backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); background:rgba(4,7,14,.82); border-bottom:1px solid var(--border-gold); transition:background .3s; }
+
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .ticker-inner { display:flex; width:max-content; animation:ticker 30s linear infinite; }
+
+    @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+    .float-anim { animation:floatY 5s ease-in-out infinite; }
+
+    @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.85)} }
+    .pulse-dot { animation:pulseDot 2s ease-in-out infinite; }
+
+    .reveal { opacity:0; transform:translateY(38px); transition:opacity .75s cubic-bezier(.16,1,.3,1),transform .75s cubic-bezier(.16,1,.3,1); }
+    .reveal.visible { opacity:1; transform:none; }
+    .delay-1{transition-delay:.10s} .delay-2{transition-delay:.20s} .delay-3{transition-delay:.30s}
+    .delay-4{transition-delay:.40s} .delay-5{transition-delay:.50s} .delay-6{transition-delay:.60s}
+
+    .icon-box { width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--gold-dim);border:1px solid rgba(201,162,39,.28);margin-bottom:14px;flex-shrink:0; }
+    .step-num { width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gold-dim);border:2px solid var(--gold);font-size:1.15rem;font-weight:800;color:var(--gold);margin:0 auto 14px;position:relative;z-index:1; }
+    .badge { display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid rgba(201,162,39,.28);border-radius:999px;padding:5px 14px;font-size:.8rem;color:var(--gold);font-weight:600; }
+    .divider { height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.35),transparent); }
+    .form-input { width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border-subtle);border-radius:12px;padding:12px 16px;font-size:.875rem;color:var(--text-primary);outline:none;transition:border-color .25s;font-family:inherit; }
+    .form-input::placeholder{color:var(--text-muted)} .form-input:focus{border-color:var(--gold)}
+
+    @keyframes ringGlow { 0%,100%{box-shadow:0 0 0 1px rgba(201,162,39,.2)} 50%{box-shadow:0 0 0 1px rgba(201,162,39,.55),0 0 60px rgba(201,162,39,.1)} }
+    .ring-glow { animation:ringGlow 4s ease-in-out infinite; }
+
+    /* ── LTR overrides ── */
+    html[dir="ltr"] .flip-text { text-align: left; }
+    html[dir="ltr"] .flip-flex  { justify-content: flex-start; }
+    html[dir="ltr"] .flip-items { align-items: flex-start; }
+    html[dir="rtl"] .flip-text  { text-align: right; }
+    html[dir="rtl"] .flip-flex  { justify-content: flex-end; }
+    html[dir="rtl"] .flip-items { align-items: flex-end; }
+
+    /* compliance list row flips */
+    .comp-row { display:flex; align-items:center; gap:10px; }
+    html[dir="rtl"] .comp-row { flex-direction: row-reverse; }
+    html[dir="ltr"] .comp-row  { flex-direction: row; }
+
+    /* Lang button */
+    #langBtn { font-family:'Inter',sans-serif!important; font-weight:700; font-size:.8rem; letter-spacing:.05em; }
+
+    @media(max-width:768px){.nav-links,.nav-cta{display:none!important}.nav-mobile-btn{display:flex!important}}
+    @media(min-width:769px){.nav-mobile-btn{display:none!important}}
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════ NAVBAR ═══════════ -->
+<nav id="navbar">
+  <div class="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+
+    <a href="#" class="flex items-center gap-3">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <path d="M18 3L6 8V19C6 25.6 11.4 31.7 18 33C24.6 31.7 30 25.6 30 19V8L18 3Z" fill="rgba(201,162,39,0.12)" stroke="#c9a227" stroke-width="1.5"/>
+        <path d="M13 18L16 21L23 14" stroke="#c9a227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div id="logoText" style="color:var(--gold);font-weight:900;font-size:1.2rem;line-height:1;">أمانة</div>
+        <div style="font-family:'Inter',sans-serif;font-size:9px;letter-spacing:.15em;color:var(--text-muted);">AMANE</div>
+      </div>
+    </a>
+
+    <div class="nav-links flex items-center gap-7">
+      <a href="#features"     data-i18n="nav.features"    style="font-size:.875rem;color:var(--text-muted);" class="hover:text-gold transition-colors">المميزات</a>
+      <a href="#how-it-works" data-i18n="nav.how"         style="font-size:.875rem;color:var(--text-muted);" class="hover:text-gold transition-colors">كيف يعمل</a>
+      <a href="#compliance"   data-i18n="nav.compliance"  style="font-size:.875rem;color:var(--text-muted);" class="hover:text-gold transition-colors">الامتثال الشرعي</a>
+      <a href="#contact"      data-i18n="nav.contact"     style="font-size:.875rem;color:var(--text-muted);" class="hover:text-gold transition-colors">تواصل معنا</a>
+    </div>
+
+    <div class="nav-cta flex items-center gap-2">
+      <a href="#contact" data-i18n="nav.signin" class="btn-outline px-4 py-2 rounded-lg text-sm">تسجيل الدخول</a>
+      <a href="#contact" data-i18n="nav.cta"    class="btn-gold    px-5 py-2 rounded-lg text-sm">ابدأ الآن</a>
+      <button id="langBtn" onclick="toggleLang()" class="btn-outline px-3 py-2 rounded-lg">EN</button>
+    </div>
+
+    <button class="nav-mobile-btn items-center justify-center w-10 h-10 rounded-lg"
+            style="border:1px solid var(--border-gold);color:var(--gold);"
+            onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobileMenu" class="hidden" style="border-top:1px solid var(--border-gold);background:rgba(4,7,14,.97);">
+    <div class="px-5 py-4 flex flex-col gap-1">
+      <a href="#features"     data-i18n="nav.features"   onclick="closeMenu()" style="color:var(--text-muted);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">المميزات</a>
+      <a href="#how-it-works" data-i18n="nav.how"        onclick="closeMenu()" style="color:var(--text-muted);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">كيف يعمل</a>
+      <a href="#compliance"   data-i18n="nav.compliance" onclick="closeMenu()" style="color:var(--text-muted);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">الامتثال الشرعي</a>
+      <a href="#contact"      data-i18n="nav.contact"    onclick="closeMenu()" style="color:var(--text-muted);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">تواصل معنا</a>
+      <div class="flex gap-2 mt-3">
+        <a href="#contact" data-i18n="nav.cta" class="btn-gold flex-1 py-3 rounded-xl text-center">ابدأ الآن</a>
+        <button id="langBtnMobile" onclick="toggleLang()" class="btn-outline px-4 py-3 rounded-xl font-bold">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="relative min-h-screen flex items-center pt-16 overflow-hidden bg-grid hex-pattern">
+  <div class="orb" style="width:650px;height:650px;background:radial-gradient(circle,rgba(15,35,80,.6),transparent 70%);top:-220px;right:-180px;"></div>
+  <div class="orb" style="width:420px;height:420px;background:radial-gradient(circle,rgba(201,162,39,.08),transparent 70%);bottom:-120px;left:-80px;"></div>
+
+  <div class="max-w-7xl mx-auto px-5 py-20 w-full relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+
+      <!-- Text -->
+      <div class="lg:col-span-3 flip-text">
+        <div class="badge mb-6" style="display:inline-flex;">
+          <span class="pulse-dot w-2 h-2 rounded-full" style="background:var(--gold);display:inline-block;flex-shrink:0;"></span>
+          <span data-i18n="hero.badge">منصة ضمان · متوافقة مع أحكام الشريعة</span>
+        </div>
+
+        <h1 class="font-black leading-tight mb-3" style="font-size:clamp(3rem,7vw,5.5rem);">
+          <span class="text-gold-grad" data-i18n="hero.brand">أمانة</span>
+        </h1>
+        <h2 class="font-bold leading-snug mb-5" style="font-size:clamp(1.4rem,3vw,2rem);color:var(--text-primary);">
+          <span data-i18n="hero.subtitle1">منصة الضمان المالي</span><br/>
+          <span style="color:var(--gold);" data-i18n="hero.subtitle2">المتوافق مع أحكام الشريعة</span>
+        </h2>
+        <p data-i18n="hero.desc" style="color:var(--text-muted);font-size:1.05rem;line-height:1.85;max-width:560px;margin-bottom:2rem;">
+          ضمانات مالية آمنة وشفافة في الجزائر — محمية بمعايير الشريعة مع وتشفير SHA-256 Merkle لكل عملية.
+        </p> 
+
+        <div class="flex flex-wrap gap-3 mb-8 flip-flex" style="justify-content:flex-end;">
+          <a href="#contact" data-i18n="hero.cta1" class="btn-gold px-8 py-3.5 rounded-xl text-base">افتح ضماناً الآن ←</a>
+          <a href="#how-it-works" data-i18n="hero.cta2" class="btn-outline px-8 py-3.5 rounded-xl text-base">كيف يعمل؟</a>
+        </div>
+
+        <div class="flex items-center gap-7 flip-flex" style="justify-content:flex-end;">
+          <div style="width:1px;height:32px;background:rgba(255,255,255,.1);"></div>
+          <div class="flip-text">
+            <div class="font-black text-2xl" style="color:var(--gold);">100%</div>
+            <div data-i18n="stat2.label" style="font-size:.75rem;color:var(--text-muted);">امتثال شرعي</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,.1);"></div>
+          <div class="flip-text">
+            <div class="font-black text-2xl" style="color:var(--gold);">24/7</div>
+            <div data-i18n="stat3.label" style="font-size:.75rem;color:var(--text-muted);">مراقبة مستمرة</div>
+          </div>
+          <div style="width:1px;height:32px;background:rgba(255,255,255,.1);"></div>
+          <div class="flip-text">
+            <div class="font-black text-2xl" style="color:var(--gold);">0</div>
+            <div data-i18n="stat4.label" style="font-size:.75rem;color:var(--text-muted);">انتهاكات شرعية</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div class="lg:col-span-2 flex justify-center items-center">
+        <div class="float-anim relative">
+          <div class="glass rounded-2xl p-6 ring-glow" style="width:300px;">
+            <div class="flex items-center justify-between mb-4">
+              <span style="font-size:.75rem;color:var(--text-muted);" data-i18n="card.id">ضمان نشط #2847</span>
+              <span data-i18n="card.status" style="background:rgba(34,197,94,.12);color:#4ade80;font-size:.7rem;padding:2px 8px;border-radius:999px;border:1px solid rgba(34,197,94,.25);">● مؤمَّن</span>
+            </div>
+            <div class="font-black mb-1" style="font-size:1.6rem;color:var(--gold);" data-i18n="card.amount">250,000 دج</div>
+            <div data-i18n="card.bank" style="font-size:.72rem;color:var(--text-muted);margin-bottom:1rem;">وديعة يد ضامنة · بنك السلام الجزائر</div>
+            <div style="height:1px;background:rgba(255,255,255,.05);margin-bottom:1rem;"></div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:.75rem;">
+                <span data-i18n="card.sharia.val" style="color:var(--gold);font-weight:600;">✓ مُصادَق</span>
+                <span data-i18n="card.sharia.label" style="color:var(--text-muted);">الحالة الشرعية</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.75rem;">
+                <span data-i18n="card.board.val" style="color:var(--text-primary);font-weight:600;">تمت المصادقة</span>
+                <span data-i18n="card.board.label" style="color:var(--text-muted);">هيئة الرقابة</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.75rem;">
+                <span style="color:var(--text-primary);font-weight:600;">CIB Débit</span>
+                <span data-i18n="card.payment.label" style="color:var(--text-muted);">أداة الدفع</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.75rem;">
+                <span data-i18n="card.aml.val" style="color:#4ade80;font-weight:600;">مُخلَّص</span>
+                <span data-i18n="card.aml.label" style="color:var(--text-muted);">فحص AML</span>
+              </div>
+            </div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.05);display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button data-i18n="card.btn1" class="btn-gold py-2 rounded-lg text-sm">إفراج</button>
+              <button data-i18n="card.btn2" class="btn-outline py-2 rounded-lg text-sm">تفاصيل</button>
+            </div>
+          </div>
+
+          <div class="glass" style="position:absolute;bottom:-14px;left:-40px;border-radius:14px;padding:8px 12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:26px;height:26px;border-radius:50%;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <div data-i18n="chip.aml.label" style="font-size:.65rem;color:var(--text-muted);">AML فحص</div>
+                <div data-i18n="chip.aml.val" style="font-size:.75rem;color:#4ade80;font-weight:700;">مُخلَّص</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass" style="position:absolute;top:-14px;right:-36px;border-radius:14px;padding:8px 12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="font-size:1.1rem;">🛡️</div>
+              <div>
+                <div data-i18n="chip.guard.label" style="font-size:.65rem;color:var(--text-muted);">حماية</div>
+                <div data-i18n="chip.guard.val" style="font-size:.75rem;color:var(--gold);font-weight:700;">مُفعَّل</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass" style="position:absolute;top:50%;left:-52px;transform:translateY(-50%);border-radius:14px;padding:8px 12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="font-size:1.1rem;">🔐</div>
+              <div>
+                <div data-i18n="chip.sha.label" style="font-size:.65rem;color:var(--text-muted);">تشفير</div>
+                <div style="font-size:.75rem;color:var(--text-primary);font-weight:700;">SHA-256</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.35;">
+    <span data-i18n="scroll.cue" style="font-size:.7rem;color:var(--text-muted);">اكتشف المزيد</span>
+    <div style="width:1px;height:36px;background:linear-gradient(to bottom,var(--gold),transparent);"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════ TICKER ═══════════ -->
+<div style="padding:10px 0;background:rgba(201,162,39,.04);border-top:1px solid var(--border-gold);border-bottom:1px solid var(--border-gold);overflow:hidden;">
+  <div id="tickerWrap" class="ticker-inner"></div>
+</div>
+
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section id="features" class="py-24 relative overflow-hidden">
+  <div class="orb" style="width:450px;height:450px;background:radial-gradient(circle,rgba(201,162,39,.06),transparent 70%);top:0;right:-120px;"></div>
+  <div class="max-w-7xl mx-auto px-5 relative z-10">
+
+    <div class="text-center mb-16 reveal">
+      <div class="badge mb-4" data-i18n="feat.badge">مميزات المنصة</div>
+      <h2 class="font-black mb-4" style="font-size:clamp(1.8rem,4vw,2.8rem);color:var(--text-primary);">
+        <span data-i18n="feat.title1">بنية تحتية</span>
+        <span class="text-gold-grad" data-i18n="feat.title2"> مالية </span>
+        <span data-i18n="feat.title3">متكاملة</span>
+      </h2>
+      <p data-i18n="feat.subtitle" style="color:var(--text-muted);font-size:1rem;max-width:600px;margin:0 auto;line-height:1.8;">
+        كل مكون في أمانة مصمم ليعكس أحكام الشريعة — من الضمان إلى التسوية، بدون أي استثناء.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div class="glass rounded-2xl p-6 reveal delay-1">
+        <div class="icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 16.4 7.6 20.5 12 22C16.4 20.5 20 16.4 20 12V6L12 2Z" fill="rgba(201,162,39,.1)" stroke="#c9a227" stroke-width="1.5"/><path d="M9 12L11 14L15 10" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 data-i18n="f1.title" class="font-bold mb-2" style="color:var(--text-primary);">الضمان</h3>
+        <p data-i18n="f1.desc" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;">ضمانات قائمة على وديعة يد ضامنة — مودعة في مصرف معتمد مع ضمان صفر أرباح ربوية.</p>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.8rem;font-weight:600;" class="flip-flex">
+          <span data-i18n="feat.more">اكتشف المزيد</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 reveal delay-2">
+        <div class="icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#c9a227" stroke-width="1.5" fill="rgba(201,162,39,.08)"/><circle cx="12" cy="12" r="5" stroke="#c9a227" stroke-width="1.5" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="1.5" fill="#c9a227"/><path d="M12 3V5M12 19V21M3 12H5M19 12H21" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 data-i18n="f2.title" class="font-bold mb-2" style="color:var(--text-primary);">كشف الاحتيال والمخاطر</h3>
+        <p data-i18n="f2.desc" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;">نظام ذكي يرصد السلوك المشبوه ويقيّم المخاطر في الوقت الفعلي — يحمي جميع أطراف الصفقة ويُصدر تنبيهات فورية عند اكتشاف أي نمط غير اعتيادي.</p>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.8rem;font-weight:600;" class="flip-flex">
+          <span data-i18n="feat.more">اكتشف المزيد</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 reveal delay-3">
+        <div class="icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3L3 7.5V13C3 17.8 7.1 22.1 12 23C16.9 22.1 21 17.8 21 13V7.5L12 3Z" fill="rgba(201,162,39,.08)" stroke="#c9a227" stroke-width="1.5"/><circle cx="12" cy="13" r="3" stroke="#c9a227" stroke-width="1.5"/><path d="M14 11L17 8" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 data-i18n="f3.title" class="font-bold mb-2" style="color:var(--text-primary);">مراقبة غسيل الأموال</h3>
+        <p data-i18n="f3.desc" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;">نظام مراقبة مكافحة غسيل الأموال في الوقت الفعلي — كشف أنماط مشبوهة وإبلاغ تلقائي وفق متطلبات الجهات الرقابية الجزائرية.</p>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.8rem;font-weight:600;" class="flip-flex">
+          <span data-i18n="feat.more">اكتشف المزيد</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 reveal delay-4">
+        <div class="icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="8" height="12" rx="1.5" fill="rgba(201,162,39,.08)" stroke="#c9a227" stroke-width="1.5"/><rect x="13" y="6" width="8" height="12" rx="1.5" fill="rgba(201,162,39,.08)" stroke="#c9a227" stroke-width="1.5"/><path d="M11 9.5L13 12L11 14.5" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 data-i18n="f4.title" class="font-bold mb-2" style="color:var(--text-primary);">التسوية والصرف الفوري</h3>
+        <p data-i18n="f4.desc" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;">إفراج فوري عن الأموال لحساب المستفيد بعد اكتمال شروط الضمان — تحويلات DZD مباشرة بتحقق متعدد الطبقات وسجل تدقيق كامل.</p>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.8rem;font-weight:600;" class="flip-flex">
+          <span data-i18n="feat.more">اكتشف المزيد</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 reveal delay-5">
+        <div class="icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#c9a227" stroke-width="1.5"/><circle cx="9" cy="11" r="2" stroke="#c9a227" stroke-width="1.5"/><path d="M6 17C6 15.3 7.3 14 9 14C10.7 14 12 15.3 12 17" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/><path d="M14.5 9H18M14.5 12H16.5" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 data-i18n="f5.title" class="font-bold mb-2" style="color:var(--text-primary);">التحقق من الهوية KYC</h3>
+        <p data-i18n="f5.desc" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;">تحقق ثلاثي المستويات — فحص قوائم العقوبات الدولية، التحقق من الوثائق، وتحديد الأشخاص السياسيين المعرضين للخطر.</p>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.8rem;font-weight:600;" class="flip-flex">
+          <span data-i18n="feat.more">اكتشف المزيد</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-6 reveal delay-6">
+        <div class="icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" fill="rgba(201,162,39,.08)" stroke="#c9a227" stroke-width="1.5"/><path d="M2 10H22" stroke="#c9a227" stroke-width="1.5"/><path d="M6 15H10M14 15H16" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3 data-i18n="f6.title" class="font-bold mb-2" style="color:var(--text-primary);">بوابة الدفع</h3>
+        <p data-i18n="f6.desc" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;">أدوات دفع متوافقة حصراً: CIB Débit، BaridiMob، و CCP مع تطبيقات بريد الجزائر.</p>
+        <div style="margin-top:1rem;display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.8rem;font-weight:600;" class="flip-flex">
+          <span data-i18n="feat.more">اكتشف المزيد</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<div class="divider max-w-7xl mx-auto"></div>
+
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section id="how-it-works" class="py-24 relative overflow-hidden">
+  <div class="orb" style="width:500px;height:500px;background:radial-gradient(circle,rgba(15,30,70,.5),transparent 70%);bottom:-150px;left:-100px;"></div>
+  <div class="max-w-7xl mx-auto px-5 relative z-10">
+
+    <div class="text-center mb-16 reveal">
+      <div class="badge mb-4" data-i18n="hiw.badge">كيف يعمل؟</div>
+      <h2 class="font-black mb-4" style="font-size:clamp(1.8rem,4vw,2.8rem);color:var(--text-primary);">
+        <span data-i18n="hiw.title1">أربع خطوات</span>
+        <span class="text-gold-grad" data-i18n="hiw.title2"> لضمان آمن</span>
+      </h2>
+      <p data-i18n="hiw.subtitle" style="color:var(--text-muted);font-size:1rem;max-width:560px;margin:0 auto;line-height:1.8;">
+        من فتح الضمان حتى الإفراج عن الأموال — عملية شفافة في كل خطوة.
+      </p>
+    </div>
+
+    <div class="relative">
+      <div class="hidden lg:block" style="position:absolute;top:27px;right:calc(12.5% + 27px);left:calc(12.5% + 27px);height:2px;background:linear-gradient(90deg,var(--gold),rgba(201,162,39,.4),rgba(201,162,39,.2));z-index:0;"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <div class="glass rounded-2xl p-6 text-center reveal delay-1">
+          <div class="step-num" data-i18n="s1.num">١</div>
+          <h3 data-i18n="s1.title" class="font-bold mb-2" style="color:var(--text-primary);">إنشاء الضمان</h3>
+          <p data-i18n="s1.desc" style="font-size:.85rem;color:var(--text-muted);line-height:1.8;">يحدد البائع والمشتري شروط الصفقة ويوقعان عقد الضمان المعتمد.</p>
+          <div style="margin-top:12px;font-size:.7rem;color:rgba(201,162,39,.5);font-family:'Inter',sans-serif;">Core Escrow</div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 text-center reveal delay-2">
+          <div class="step-num" data-i18n="s2.num">٢</div>
+          <h3 data-i18n="s2.title" class="font-bold mb-2" style="color:var(--text-primary);">تمويل الحساب</h3>
+          <p data-i18n="s2.desc" style="font-size:.85rem;color:var(--text-muted);line-height:1.8;">يودع المشتري المبلغ عبر أداة دفع معتمدة — تُحفظ في حساب وديعة يد ضامنة.</p>
+          <div style="margin-top:12px;font-size:.7rem;color:rgba(201,162,39,.5);font-family:'Inter',sans-serif;">Payment Gateway</div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 text-center reveal delay-3">
+          <div class="step-num" data-i18n="s3.num">٣</div>
+          <h3 data-i18n="s3.title" class="font-bold mb-2" style="color:var(--text-primary);">التحقق والموافقة</h3>
+          <p data-i18n="s3.desc" style="font-size:.85rem;color:var(--text-muted);line-height:1.8;">تتحقق المنصة من شروط الإفراج — KYC، AML، الامتثال — مع إبلاغ جميع الأطراف لحظياً.</p>
+          <div style="margin-top:12px;font-size:.7rem;color:rgba(201,162,39,.5);font-family:'Inter',sans-serif;">Conditions</div>
+        </div>
+
+        <div class="glass rounded-2xl p-6 text-center reveal delay-4">
+          <div class="step-num" data-i18n="s4.num">٤</div>
+          <h3 data-i18n="s4.title" class="font-bold mb-2" style="color:var(--text-primary);">الإفراج عن الأموال</h3>
+          <p data-i18n="s4.desc" style="font-size:.85rem;color:var(--text-muted);line-height:1.8;">يُحرَّر المبلغ مع توثيق تشفيري كامل في سجل التدقيق غير القابل للتعديل .</p>
+          <div style="margin-top:12px;font-size:.7rem;color:rgba(201,162,39,.5);font-family:'Inter',sans-serif;">Settlement</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="text-center mt-12 reveal">
+      <a href="#contact" data-i18n="hiw.cta" class="btn-gold px-10 py-4 rounded-xl text-base">ابدأ أول ضمان مجاناً ←</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════ COMPLIANCE ═══════════ -->
+<section id="compliance" class="py-20 relative" style="background:radial-gradient(ellipse at 50% 50%,rgba(201,162,39,.04),transparent 65%);">
+  <div class="max-w-7xl mx-auto px-5">
+    <div class="glass ring-glow rounded-3xl p-8 md:p-14 reveal" style="border-color:rgba(201,162,39,.3);">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+        <div class="flip-text">
+          <div class="badge mb-5" data-i18n="comp.badge">أمان البيانات والتشفير</div>
+          <h2 class="font-black mb-4" style="font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--text-primary);line-height:1.2;">
+            <span data-i18n="comp.title1">تشفير البيانات</span>
+            <span class="text-gold-grad" data-i18n="comp.title2"> والأمان</span><br/>
+            <span data-i18n="comp.title3">من الطبقة الأولى</span>
+          </h2>
+          <p data-i18n="comp.desc" style="color:var(--text-muted);line-height:1.85;margin-bottom:1.5rem;">
+            كل معاملة في أمانة محمية بتشفير من الدرجة الأولى — من SHA-256 Merkle لكل حدث، إلى توقيع ECDSA P-256 محمي بـ HSM، وأرشفة WORM لمدة عشر سنوات.
+          </p>
+          <ul style="display:flex;flex-direction:column;gap:12px;">
+            <li class="comp-row">
+              <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(201,162,39,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span data-i18n="comp.c1" style="font-size:.875rem;color:#d0d8f0;">سلسلة Merkle بـ SHA-256 — سجل تدقيق غير قابل للتعديل مرتبط بكل معاملة</span>
+            </li>
+            <li class="comp-row">
+              <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(201,162,39,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span data-i18n="comp.c2" style="font-size:.875rem;color:#d0d8f0;">توقيع ECDSA P-256 محمي بـ HSM — لكل عملية حساسة وإصدار JWT ثنائي التحكم</span>
+            </li>
+            <li class="comp-row">
+              <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(201,162,39,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span data-i18n="comp.c3" style="font-size:.875rem;color:#d0d8f0;">مصادقة WebAuthn متعددة العوامل — إلزامية لجميع مشغّلي المنصة بلا استثناء</span>
+            </li>
+            <li class="comp-row">
+              <div style="width:22px;height:22px;border-radius:50%;background:var(--gold-dim);border:1px solid rgba(201,162,39,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="#c9a227" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <span data-i18n="comp.c4" style="font-size:.875rem;color:#d0d8f0;">أرشيف MinIO WORM بوضع COMPLIANCE — احتفاظ قانوني لمدة 10 سنوات في عقدة جزائرية</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="glass rounded-2xl p-6 text-center">
+            <div class="font-black mb-1" style="font-size:1.9rem;color:var(--gold);" data-i18n="cs1.num">P-256</div>
+            <div data-i18n="cs1.label" style="font-size:.8rem;color:var(--text-muted);">تشفير ECDSA</div>
+            <div style="font-size:.65rem;color:rgba(201,162,39,.45);margin-top:4px;font-family:'Inter',sans-serif;">HSM-BACKED</div>
+          </div>
+          <div class="glass rounded-2xl p-6 text-center">
+            <div class="font-black mb-1" style="font-size:1.5rem;color:var(--gold);" data-i18n="cs2.num">SHA-256</div>
+            <div data-i18n="cs2.label" style="font-size:.8rem;color:var(--text-muted);">سلسلة Merkle</div>
+            <div style="font-size:.65rem;color:rgba(201,162,39,.45);margin-top:4px;font-family:'Inter',sans-serif;">MERKLE CHAIN</div>
+          </div>
+          <div class="glass rounded-2xl p-6 text-center">
+            <div class="font-black mb-1" style="font-size:2.2rem;color:var(--gold);" data-i18n="cs3.num">10y</div>
+            <div data-i18n="cs3.label" style="font-size:.8rem;color:var(--text-muted);">أرشيف WORM</div>
+            <div style="font-size:.65rem;color:rgba(201,162,39,.45);margin-top:4px;font-family:'Inter',sans-serif;">COMPLIANCE MODE</div>
+          </div>
+          <div class="glass rounded-2xl p-6 text-center">
+            <div class="font-black mb-1" style="font-size:2.2rem;color:var(--gold);" data-i18n="cs4.num">0</div>
+            <div data-i18n="cs4.label" style="font-size:.8rem;color:var(--text-muted);">اختراقات</div>
+            <div style="font-size:.65rem;color:rgba(201,162,39,.45);margin-top:4px;font-family:'Inter',sans-serif;">BREACHES</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="divider max-w-7xl mx-auto"></div>
+
+
+<!-- ═══════════ CONTACT ═══════════ -->
+<section id="contact" class="py-24 relative overflow-hidden">
+  <div class="orb" style="width:600px;height:600px;background:radial-gradient(circle,rgba(201,162,39,.06),transparent 70%);top:-200px;left:50%;transform:translateX(-50%);"></div>
+  <div class="max-w-7xl mx-auto px-5 relative z-10">
+    <div class="glass ring-glow rounded-3xl p-8 md:p-14 text-center reveal" style="background:linear-gradient(140deg,rgba(10,16,30,.95),rgba(18,12,4,.95));border-color:rgba(201,162,39,.3);">
+
+      <div class="badge mb-6" style="margin:0 auto 1.5rem;" data-i18n="contact.badge">ابدأ رحلتك المالية</div>
+      <h2 class="font-black mb-4" style="font-size:clamp(2rem,5vw,3.5rem);color:var(--text-primary);line-height:1.15;">
+        <span data-i18n="contact.title1">جاهز لأول</span><br/>
+        <span class="text-gold-grad" data-i18n="contact.title2">ضمان ؟</span>
+      </h2>
+      <p data-i18n="contact.desc" style="color:var(--text-muted);font-size:1rem;max-width:480px;margin:0 auto 2rem;line-height:1.8;">
+        تواصل مع فريقنا لتحمي معاملاتك التجارية بضمانات مالية شرعية معتمدة في الجزائر.
+      </p>
+
+      <form id="contactForm" style="max-width:500px;margin:0 auto 1.5rem;display:flex;flex-direction:column;gap:12px;" onsubmit="handleSubmit(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <input class="form-input" type="text"  data-i18n-ph="form.name"    placeholder="الاسم الكامل" required />
+          <input class="form-input" type="tel"   data-i18n-ph="form.phone"   placeholder="رقم الهاتف" required />
+        </div>
+        <input  class="form-input" type="email" data-i18n-ph="form.email"   placeholder="البريد الإلكتروني" required />
+        <textarea class="form-input" rows="3"   data-i18n-ph="form.message" placeholder="كيف يمكننا مساعدتك؟" style="resize:none;"></textarea>
+        <button id="submitBtn" type="submit" class="btn-gold w-full py-4 rounded-xl text-base" style="width:100%;" data-i18n="form.submit">إرسال الطلب ←</button>
+      </form>
+
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px;font-size:.85rem;color:var(--text-muted);">
+        <span style="width:1px;height:16px;background:rgba(255,255,255,.1);"></span>
+        <span style="display:flex;align-items:center;gap:6px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 4.5V8L10 10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="contact.location">الجزائر · 2026</span>
+        </span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer style="border-top:1px solid rgba(255,255,255,.05);padding:48px 0 28px;">
+  <div class="max-w-7xl mx-auto px-5">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+
+      <div class="md:col-span-2">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none"><path d="M18 3L6 8V19C6 25.6 11.4 31.7 18 33C24.6 31.7 30 25.6 30 19V8L18 3Z" fill="rgba(201,162,39,.12)" stroke="#c9a227" stroke-width="1.5"/><path d="M13 18L16 21L23 14" stroke="#c9a227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <div id="footerLogoText" style="color:var(--gold);font-weight:900;font-size:1.2rem;line-height:1;">أمانة</div>
+            <div style="font-family:'Inter',sans-serif;font-size:9px;letter-spacing:.15em;color:var(--text-muted);">AMANE · DEEP MINDS</div>
+          </div>
+        </div>
+        <p data-i18n="foot.tagline" style="font-size:.875rem;color:var(--text-muted);line-height:1.8;max-width:280px;">
+          منصة الضمان المالي في الجزائر — ضمانات آمنة، شفافة، ومتوافقة تماماً مع أحكام الشريعة.
+        </p>
+      </div>
+
+      <div>
+        <h4 data-i18n="foot.platform" style="font-size:.875rem;font-weight:700;color:var(--text-primary);margin-bottom:14px;">المنصة</h4>
+        <ul style="display:flex;flex-direction:column;gap:8px;">
+          <li><a href="#features"     data-i18n="nav.features"   style="font-size:.85rem;color:var(--text-muted);" class="hover:text-gold transition-colors">المميزات</a></li>
+          <li><a href="#how-it-works" data-i18n="nav.how"        style="font-size:.85rem;color:var(--text-muted);" class="hover:text-gold transition-colors">كيف يعمل</a></li>
+          <li><a href="#compliance"   data-i18n="nav.compliance" style="font-size:.85rem;color:var(--text-muted);" class="hover:text-gold transition-colors">الامتثال</a></li>
+          <li><a href="#contact"      data-i18n="nav.contact"    style="font-size:.85rem;color:var(--text-muted);" class="hover:text-gold transition-colors">تواصل معنا</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,.05);padding-top:20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <p data-i18n="foot.copy" style="font-size:.75rem;color:var(--text-muted);">© 2026 أمانة — Deep Minds. جميع الحقوق محفوظة.</p>
+      <p data-i18n="foot.legal" style="font-size:.72rem;color:rgba(90,105,128,.8);max-width:480px;text-align:center;">
+        جميع العمليات مدققة ومرخصة. الأموال المودعة محمية بعقد وديعة يد ضامنة — لا تمثّل هذه المنصة أداةً للاستثمار أو المضاربة.
+      </p>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════ SCRIPTS ═══════════ -->
+<script>
+// ── Translations ────────────────────────────────────────────────
+const T = {
+  ar: {
+    'nav.features':'المميزات','nav.how':'كيف يعمل','nav.compliance':'الامتثال الشرعي',
+    'nav.contact':'تواصل معنا','nav.signin':'تسجيل الدخول','nav.cta':'ابدأ الآن',
+    'hero.badge':'منصة ضمان مرخصة · متوافقة مع أحكام الشريعة',
+    'hero.brand':'أمانة','hero.subtitle1':'منصة الضمان المالي','hero.subtitle2':'المتوافق مع أحكام الشريعة',
+    'hero.desc':'ضمانات مالية آمنة وشفافة في الجزائر — محمية بمعايير الشريعة مع رقابة هيئة شرعية متخصصة وتشفير SHA-256 Merkle لكل عملية.',
+    'hero.cta1':'افتح ضماناً الآن ←','hero.cta2':'كيف يعمل؟',
+    'stat1.label':'معاملة آمنة','stat2.label':'امتثال شرعي','stat3.label':'مراقبة مستمرة','stat4.label':'انتهاكات شرعية',
+    'card.id':'ضمان نشط #2847','card.status':'● مؤمَّن','card.amount':'250,000 دج',
+    'card.bank':'وديعة يد ضامنة · بنك السلام الجزائر',
+    'card.sharia.label':'الحالة الشرعية','card.sharia.val':'✓ حلال مُصادَق',
+    'card.board.label':'هيئة الرقابة','card.board.val':'تمت المصادقة',
+    'card.payment.label':'أداة الدفع','card.aml.label':'فحص AML','card.aml.val':'مُخلَّص',
+    'card.btn1':'إفراج','card.btn2':'تفاصيل',
+    'chip.aml.label':'AML فحص','chip.aml.val':'مُخلَّص',
+    'chip.guard.label':'حماية','chip.guard.val':'مُفعَّل','chip.sha.label':'تشفير',
+    'scroll.cue':'اكتشف المزيد',
+    'feat.badge':'مميزات المنصة','feat.title1':'بنية تحتية','feat.title2':' مالية شرعية ','feat.title3':'متكاملة',
+    'feat.subtitle':'كل مكون في أمانة مصمم ليعكس أحكام الشريعة — من الضمان إلى التسوية، بدون أي استثناء.',
+    'f1.title':'الضمان الشرعي','f1.desc':'ضمانات قائمة على وديعة يد ضامنة — مودعة في مصرف معتمد (بنك السلام أو بركة بنك) مع ضمان صفر أرباح ربوية.',
+    'f2.title':'كشف الاحتيال والمخاطر','f2.desc':'نظام ذكي يرصد السلوك المشبوه ويقيّم المخاطر في الوقت الفعلي — يحمي جميع أطراف الصفقة ويُصدر تنبيهات فورية.',
+    'f3.title':'مراقبة AML / CTRF','f3.desc':'نظام مراقبة مكافحة غسيل الأموال في الوقت الفعلي — كشف أنماط مشبوهة وإبلاغ تلقائي وفق متطلبات الجهات الرقابية الجزائرية.',
+    'f4.title':'التسوية والصرف الفوري','f4.desc':'إفراج فوري عن الأموال بعد اكتمال شروط الضمان — تحويلات DZD مباشرة بتحقق متعدد الطبقات وسجل تدقيق كامل.',
+    'f5.title':'التحقق من الهوية KYC','f5.desc':'تحقق ثلاثي المستويات — فحص قوائم العقوبات الدولية، التحقق من الوثائق، وتحديد الأشخاص السياسيين المعرضين للخطر.',
+    'f6.title':'بوابة الدفع الشرعية','f6.desc':'أدوات دفع متوافقة حصراً: CIB Débit، BaridiMob، و CCP — بطاقات الائتمان وكل الأدوات ذات الفوائد محجوبة على مستوى البنية التحتية.',
+    'feat.more':'اكتشف المزيد',
+    'hiw.badge':'كيف يعمل؟','hiw.title1':'أربع خطوات','hiw.title2':' لضمان آمن',
+    'hiw.subtitle':'من فتح الضمان حتى الإفراج عن الأموال — عملية شفافة في كل خطوة.',
+    's1.num':'١','s1.title':'إنشاء الضمان','s1.desc':'يحدد البائع والمشتري شروط الصفقة ويوقعان عقد الضمان المعتمد.',
+    's2.num':'٢','s2.title':'تمويل الحساب','s2.desc':'يودع المشتري المبلغ عبر أداة دفع معتمدة — تُحفظ في حساب وديعة يد ضامنة.',
+    's3.num':'٣','s3.title':'التحقق والموافقة','s3.desc':'تتحقق المنصة من شروط الإفراج — KYC، AML، الامتثال — مع إبلاغ جميع الأطراف لحظياً.',
+    's4.num':'٤','s4.title':'الإفراج عن الأموال','s4.desc':'يُحرَّر المبلغ مع توثيق تشفيري كامل في سجل التدقيق غير القابل للتعديل — محفوظ 10 سنوات.',
+    'hiw.cta':'ابدأ أول ضمان مجاناً ←',
+    'comp.badge':'أمان البيانات والتشفير','comp.title1':'تشفير البيانات','comp.title2':' والأمان','comp.title3':'من الطبقة الأولى',
+    'comp.desc':'كل معاملة في أمانة محمية بتشفير من الدرجة الأولى — من SHA-256 Merkle لكل حدث، إلى توقيع ECDSA P-256 محمي بـ HSM، وأرشفة WORM لمدة عشر سنوات.',
+    'comp.c1':'سلسلة Merkle بـ SHA-256 — سجل تدقيق غير قابل للتعديل مرتبط بكل معاملة',
+    'comp.c2':'توقيع ECDSA P-256 محمي بـ HSM — لكل عملية حساسة وإصدار JWT ثنائي التحكم',
+    'comp.c3':'مصادقة WebAuthn متعددة العوامل — إلزامية لجميع مشغّلي المنصة بلا استثناء',
+    'comp.c4':'أرشيف MinIO WORM بوضع COMPLIANCE — احتفاظ قانوني لمدة 10 سنوات في عقدة جزائرية',
+    'cs1.num':'P-256','cs1.label':'تشفير ECDSA','cs2.num':'SHA-256','cs2.label':'سلسلة Merkle',
+    'cs3.num':'10y','cs3.label':'أرشيف WORM','cs4.num':'0','cs4.label':'اختراقات',
+    'contact.badge':'ابدأ رحلتك المالية الشرعية','contact.title1':'جاهز لأول','contact.title2':'ضمان حلال؟',
+    'contact.desc':'تواصل مع فريقنا لتحمي معاملاتك التجارية بضمانات مالية شرعية معتمدة في الجزائر.',
+    'form.name':'الاسم الكامل','form.phone':'رقم الهاتف','form.email':'البريد الإلكتروني',
+    'form.message':'كيف يمكننا مساعدتك؟','form.submit':'إرسال الطلب ←',
+    'contact.location':'الجزائر · 2026',
+    'foot.tagline':'منصة الضمان المالي الشرعي في الجزائر — ضمانات آمنة، شفافة، ومتوافقة تماماً مع أحكام الشريعة.',
+    'foot.platform':'المنصة','foot.accred':'الاعتمادات',
+    'foot.acc1':'مرخص من CPA الجزائر','foot.acc2':'بنك السلام الجزائر',
+    'foot.acc3':'بركة بنك الجزائر','foot.acc4':'متوافق مع معايير AAOIFI',
+    'foot.copy':'© 2026 أمانة — Deep Minds. جميع الحقوق محفوظة.',
+    'foot.legal':'جميع العمليات مدققة ومرخصة. الأموال المودعة محمية بعقد وديعة يد ضامنة — لا تمثّل هذه المنصة أداةً للاستثمار أو المضاربة.',
+    'ticker': [
+      '✓ <strong style="color:var(--gold);">صفر ربا مضمون</strong> · Zero Riba',
+      '🛡️ <strong style="color:var(--gold);">منصة مرخصة CPA</strong> · Regulated',
+      '🏦 <strong style="color:var(--gold);">وديعة يد ضامنة</strong> · Wadiah Custody',
+      '🛡️ <strong style="color:var(--gold);">مراقبة AML/CTRF</strong> · Full Compliance',
+      '🔐 <strong style="color:var(--gold);">تشفير SHA-256 Merkle</strong> · Immutable Audit',
+      '✓ <strong style="color:var(--gold);">مرخص CPA جزائر</strong> · Licensed',
+      '💳 <strong style="color:var(--gold);">CIB · BaridiMob · CCP</strong> · Compliant Only',
+    ],
+  },
+  en: {
+    'nav.features':'Features','nav.how':'How It Works','nav.compliance':'Compliance',
+    'nav.contact':'Contact','nav.signin':'Sign In','nav.cta':'Get Started',
+    'hero.badge':'Licensed Escrow Platform · Sharia-Compliant',
+    'hero.brand':'Amane','hero.subtitle1':'Financial Escrow Platform','hero.subtitle2':'Built on Sharia Principles',
+    'hero.desc':'Safe, transparent financial escrow in Algeria — protected by Sharia standards with a specialized supervisory board and SHA-256 Merkle encryption for every transaction.',
+    'hero.cta1':'Open an Escrow Now →','hero.cta2':'How It Works?',
+    'stat1.label':'Secured Transactions','stat2.label':'Sharia Compliant','stat3.label':'Continuous Monitoring','stat4.label':'Violations',
+    'card.id':'Active Escrow #2847','card.status':'● Secured','card.amount':'250,000 DZD',
+    'card.bank':'Wadiah Custody · Bank Al Salam Algeria',
+    'card.sharia.label':'Compliance Status','card.sharia.val':'✓ Cleared',
+    'card.board.label':'Supervisory Board','card.board.val':'Approved',
+    'card.payment.label':'Payment Method','card.aml.label':'AML Check','card.aml.val':'Cleared',
+    'card.btn1':'Release','card.btn2':'Details',
+    'chip.aml.label':'AML Check','chip.aml.val':'Cleared',
+    'chip.guard.label':'Protection','chip.guard.val':'Active','chip.sha.label':'Encryption',
+    'scroll.cue':'Scroll to explore',
+    'feat.badge':'Platform Features','feat.title1':'Complete','feat.title2':' Sharia-Compliant ','feat.title3':'Infrastructure',
+    'feat.subtitle':'Every component in Amane reflects Sharia principles — from escrow to settlement, without exception.',
+    'f1.title':'Compliant Escrow','f1.desc':'Escrow based on Wadiah Yad Damanah — held in an approved bank (Bank Al Salam or Baraka Bank) with a zero-interest guarantee.',
+    'f2.title':'Fraud & Risk Detection','f2.desc':'An intelligent system monitoring suspicious behaviour and assessing risk in real time — protecting all parties and issuing instant alerts on unusual patterns.',
+    'f3.title':'AML / CTRF Monitoring','f3.desc':'Real-time anti-money laundering monitoring — detecting suspicious patterns and automatically reporting to Algerian regulatory authorities.',
+    'f4.title':'Instant Settlement','f4.desc':'Immediate fund release to the beneficiary once escrow conditions are met — DZD transfers with multi-layer verification and a full audit trail.',
+    'f5.title':'KYC Identity Verification','f5.desc':'Three-tier verification — international sanctions screening, document verification, and politically exposed persons identification.',
+    'f6.title':'Compliant Payment Gateway','f6.desc':'Exclusively compliant instruments: CIB Débit, BaridiMob, and CCP — credit cards and all interest-bearing instruments blocked at infrastructure level.',
+    'feat.more':'Learn More',
+    'hiw.badge':'How It Works','hiw.title1':'Four Steps','hiw.title2':' to a Secure Escrow',
+    'hiw.subtitle':'From opening the escrow to releasing funds — a transparent process monitored at every step.',
+    's1.num':'1','s1.title':'Create the Escrow','s1.desc':'Buyer and seller define the transaction terms and sign the approved escrow agreement.',
+    's2.num':'2','s2.title':'Fund the Account','s2.desc':"The buyer deposits via an approved payment instrument — held in a Wadiah custody account at an approved bank.",
+    's3.num':'3','s3.title':'Verify & Approve','s3.desc':'The platform verifies release conditions — KYC, AML, compliance checks — and notifies all parties instantly.',
+    's4.num':'4','s4.title':'Release the Funds','s4.desc':'Funds are released with a full cryptographic audit trail — retained for 10 years in a tamper-proof archive.',
+    'hiw.cta':'Start Your First Escrow Free →',
+    'comp.badge':'Data Security & Encryption','comp.title1':'Data Encryption','comp.title2':' & Security','comp.title3':'Enterprise Grade',
+    'comp.desc':'Every transaction in Amane is protected by best-in-class encryption — SHA-256 Merkle on every event, HSM-backed ECDSA P-256 signatures, and 10-year WORM archival.',
+    'comp.c1':'SHA-256 Merkle chain — tamper-proof audit trail linked to every transaction',
+    'comp.c2':'HSM-backed ECDSA P-256 signatures — for every sensitive operation and dual-control JWT',
+    'comp.c3':'WebAuthn multi-factor authentication — mandatory for all platform operators, no exceptions',
+    'comp.c4':'MinIO WORM archive in COMPLIANCE mode — 10-year legal retention in Algerian jurisdiction',
+    'cs1.num':'P-256','cs1.label':'ECDSA Encryption','cs2.num':'SHA-256','cs2.label':'Merkle Chain',
+    'cs3.num':'10y','cs3.label':'WORM Archive','cs4.num':'0','cs4.label':'Breaches',
+    'contact.badge':'Start Your Compliant Journey','contact.title1':'Ready for Your','contact.title2':'First Compliant Escrow?',
+    'contact.desc':'Get in touch with our team to protect your business transactions with certified compliant escrow in Algeria.',
+    'form.name':'Full Name','form.phone':'Phone Number','form.email':'Email Address',
+    'form.message':'How can we help you?','form.submit':'Send Request →',
+    'contact.location':'Algeria · 2026',
+    'foot.tagline':'Sharia-compliant financial escrow in Algeria — safe, transparent, and fully certified.',
+    'foot.platform':'Platform','foot.accred':'Accreditations',
+    'foot.acc1':'CPA Algeria Licensed','foot.acc2':'Bank Al Salam Algeria',
+    'foot.acc3':'Baraka Bank Algeria','foot.acc4':'AAOIFI Compliant',
+    'foot.copy':'© 2026 Amane — Deep Minds. All rights reserved.',
+    'foot.legal':'All operations are reviewed and licensed. Deposited funds are protected by a Wadiah Yad Damanah agreement — this platform is not an investment or speculation vehicle.',
+    'ticker': [
+      '✓ <strong style="color:var(--gold);">Zero Riba Guarantee</strong>',
+      '🛡️ <strong style="color:var(--gold);">CPA Algeria Licensed</strong> · Regulated',
+      '🏦 <strong style="color:var(--gold);">Wadiah Yad Damanah</strong> · Custody',
+      '🛡️ <strong style="color:var(--gold);">AML/CTRF Monitoring</strong> · Full Compliance',
+      '🔐 <strong style="color:var(--gold);">SHA-256 Merkle</strong> · Immutable Audit',
+      '✓ <strong style="color:var(--gold);">Sharia-Compliant</strong> · Reviewed',
+      '💳 <strong style="color:var(--gold);">CIB · BaridiMob · CCP</strong> · Compliant Only',
+    ],
+  }
+};
+
+// ── Apply translations ──────────────────────────────────────────
+function applyLang(lang) {
+  const d = T[lang];
+  // text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = d[el.dataset.i18n];
+    if (v !== undefined) el.textContent = v;
+  });
+  // placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const v = d[el.dataset.i18nPh];
+    if (v !== undefined) el.placeholder = v;
+  });
+  // logo brand text
+  const lb = document.getElementById('logoText');
+  const fb = document.getElementById('footerLogoText');
+  if (lb) lb.textContent = lang === 'en' ? 'Amane' : 'أمانة';
+  if (fb) fb.textContent = lang === 'en' ? 'Amane' : 'أمانة';
+  // page title
+  document.title = lang === 'en' ? 'Amane | Sharia-Compliant Escrow Platform' : 'أمانة | منصة الضمان المالي الشرعي';
+  // lang button labels
+  document.querySelectorAll('#langBtn,#langBtnMobile').forEach(b => { b.textContent = lang === 'en' ? 'ع' : 'EN'; });
+  // rebuild ticker
+  buildTicker(lang);
+}
+
+// ── Ticker ──────────────────────────────────────────────────────
+function buildTicker(lang) {
+  const wrap = document.getElementById('tickerWrap');
+  if (!wrap) return;
+  const items = T[lang].ticker;
+  const sep = '<span style="color:rgba(201,162,39,.3);margin:0 16px;">◆</span>';
+  const row = items.map(t => `<span style="font-size:.8rem;color:var(--text-muted);white-space:nowrap;">${t}</span>`).join(sep);
+  const full = `<div style="display:flex;align-items:center;padding:0 20px;">${row}${sep}</div>`;
+  wrap.innerHTML = full + full; // duplicate for seamless loop
+}
+
+// ── Toggle ──────────────────────────────────────────────────────
+function toggleLang() {
+  const html = document.documentElement;
+  const next = html.lang === 'ar' ? 'en' : 'ar';
+  html.lang = next;
+  html.dir  = next === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('ltr', next === 'en');
+  applyLang(next);
+}
+
+// ── Init ticker on load ─────────────────────────────────────────
+buildTicker('ar');
+
+// ── Scroll reveal ───────────────────────────────────────────────
+const observer = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+  { threshold: 0.1 }
+);
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── Navbar opacity on scroll ────────────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.style.background = window.scrollY > 60 ? 'rgba(4,7,14,.98)' : 'rgba(4,7,14,.82)';
+}, { passive: true });
+
+// ── Mobile menu ─────────────────────────────────────────────────
+function closeMenu() { document.getElementById('mobileMenu').classList.add('hidden'); }
+
+// ── Contact form ────────────────────────────────────────────────
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const lang = document.documentElement.lang;
+  btn.textContent = lang === 'en' ? '✓ Request sent — we\'ll be in touch soon' : '✓ تم إرسال طلبك — سنتواصل معك قريباً';
+  btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+  btn.style.color = '#fff';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = T[lang]['form.submit'];
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.disabled = false;
+    e.target.reset();
+  }, 4000);
+}
+
+// ── Smooth scroll ───────────────────────────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    const t = document.querySelector(this.getAttribute('href'));
+    if (!t) return;
+    e.preventDefault();
+    t.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+});
+</script>
+
+</body>
+</html>
